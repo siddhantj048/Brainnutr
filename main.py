@@ -24,16 +24,21 @@ with open("streak.txt", "r") as f:
 # randomizing  function
 
 def random_q():
-    global answer_label
+    global answer_label, cvallist, ckeylist
     answer_label.config(text="")
     # create a list of questions
     global our_questions
-    our_questions = ['(n-1)d^5ns^2', '1.51', '2.1 x 10^-28', '10^-33','linkage']
-
+    our_questions = {'(n-1)d^5ns^2': "2",
+                     '1.51': "1",
+                     '2.1 x 10^-28': "3",
+                     '10^-33': "4",
+                     'linkage': "2"}
+    ckeylist = list(our_questions.keys())
+    cvallist = list(our_questions.values())
     # random question generator
     global rando
     rando = randint(0, len(our_questions) - 1)
-    chemy = "chem/" + our_questions[rando] + ".png"
+    chemy = "chem/" + ckeylist[rando] + ".png"
 
     # create the question images
     global chem_img
@@ -56,11 +61,11 @@ phy_frame = Frame(root, width=500, height=500)
 def chem_answer():
     global answer_label, streak
     answer = answer_input.get()
-    if answer.lower() == our_questions[rando]:
-        response = "Correct!" + " " + our_questions[rando]
+    if answer == cvallist[rando]:
+        response = "Correct!" + " " + ckeylist[rando]
         streak += 1
     else:
-        response = "Incorrect!" + " " + our_questions[rando]
+        response = "Incorrect!" + " " + ckeylist[rando]
         streak = 0
     answer_label.config(text=response)
     # clear box
@@ -78,20 +83,8 @@ def chem_answer():
 def chem():
     hide_all_frames()
     chem_frame.pack(fill="both", expand=1)
-    # my_label = Label(chem_frame, text="Chemistry").pack()
 
-    # create a list of questions
-    '''
-    global our_questions
-    our_questions = ['a','b','c','d']
-    #random question generator
-    global rando
-    rando = randint(0,len(our_questions)-1)
-    chemy = "chem/" + our_questions[rando] + ".png"
-    #create the question images
-    global chem_img
-    chem_img = ImageTk.PhotoImage(Image.open(chemy))
-    '''
+
     global show_img
     show_img = Label(chem_frame)
     show_img.pack(pady=15)
@@ -117,7 +110,7 @@ def chem():
     text_button.pack(pady=5)
 
     # create button to answer the questions
-    answer_button = Button(chem_frame, text="Note : Answer options as numeric numbers not option. For powers use ^")
+    answer_button = Button(chem_frame, text="Note: Input should be the option as 1,2,3,4")
     answer_button.pack(pady=5)
 
     #status
@@ -145,16 +138,22 @@ def chem():
 answer_label1 = None
 
 def random_q1():
-    global answer_label1
+    global answer_label1, pkeylist, pvallist
     answer_label1.config(text="")
     # create a list of questions
     global our_questions1
-    our_questions1 = ['3', '10^-12','16.5', '55', 'due north']
+    our_questions1 = {'3': "2",
+                      '10^-12': "3",
+                      '16.5': "2",
+                      '55': "2",
+                      'due north': "1"}
+    pkeylist = list(our_questions1.keys())
+    pvallist = list(our_questions1.values())
 
     # random question generator
     global rando1
     rando1 = randint(0, len(our_questions1) - 1)
-    phyy = "phy/" + our_questions1[rando1] + ".png"
+    phyy = "phy/" + pkeylist[rando1] + ".png"
 
     # create the question images
     global phy_img
@@ -171,11 +170,11 @@ def timer(sec, func):
 def phy_answer():
     global answer_label1, streak
     answer1 = answer_input1.get()
-    if answer1.lower() == our_questions1[rando1]:
-        response = "Correct!" + " " + our_questions1[rando1]
+    if answer1 == pvallist[rando1]:
+        response = "Correct!" + " " + pkeylist[rando1]
         streak += 1
     else:
-        response = "Incorrect!" + " " + our_questions1[rando1]
+        response = "Incorrect!" + " " + pkeylist[rando1]
         streak = 0
     answer_label1.config(text=response)
     # clear box
@@ -221,7 +220,7 @@ def phy():
 
     # create button to answer the questions
     answer_button = Button(
-        phy_frame, text="Note : Answer options as numeric numbers not option. For powers use ^")
+        phy_frame, text="Note: Input should be the option as 1,2,3,4")
     answer_button.pack(pady=5)
 
     #status
