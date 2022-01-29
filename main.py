@@ -14,7 +14,7 @@ root.title('Brainnuttr')
 root.geometry("960x560")
 
 #setting bg img
-image_home = Image.open('main.png')
+image_home = Image.open('brainnuttr.png')
 img_home = ImageTk.PhotoImage(image_home)
 label_img = Label(root, image=img_home)
 label_img.place(x=0, y=0)
@@ -24,15 +24,6 @@ with open("streak.txt", "r") as f:
     streak = int(f.read())
 
 
-db = mysql.connector.connect(
-    host="localhost", user="root", db="bntr", passwd="sid2baddy")
-cursor = db.cursor()
-
-global sno
-streak = 0
-
-with open("sno.txt", "r") as flogin:
-    sno = int(flogin.read())
 
 
 # _________________________CHEMISTRY starts_________________________________________________
@@ -46,13 +37,13 @@ def random_q():
     global our_questions
     our_questions = {'(n-1)d^5ns^2': "2",
                      '1.51': "1",
-                     '1':'1',
+                     '1': '1',
                      '2.1 x 10^-28': "3",
                      '10^-33': "4",
-                     'Ca':'3',
+                     'Ca': '3',
                      'linkage': "2",
-                     'NaCl':'4',
-                     'Rb':'3',
+                     'NaCl': '4',
+                     'Rb': '3',
                      "Swart's reaction": '2'
                      }
     ckeylist = list(our_questions.keys())
@@ -289,11 +280,11 @@ def random_q2():
                       'Leukovirus': "4",
                       'Limbic system': "2",
                       'Measles': "2",
-                      'neuromuscular junction' :'3',
-                      'Pro-plastid':'3',
-                      'Rhodoplast':'3',
-                      'Simple reflex' :'2',
-                      'Virus':'3'
+                      'neuromuscular junction' : '3',
+                      'Pro-plastid': '3',
+                      'Rhodoplast': '3',
+                      'Simple reflex': '2',
+                      'Virus': '3'
                      }
     bkeylist = list(our_questions2.keys())
     bvallist = list(our_questions2.values())
@@ -388,50 +379,7 @@ def bio():
     status_button1.bind("<Enter>", button_hover2)
     status_button1.bind("<Leave>", button_hover_leave2)
 
-#-------------------------------------------BIOLOGY Ends--------------------------------
-
-
-#---------------------------------LOGIN STUFF------------------------------------------
-
-def login():
-    hide_all_frames()
-    global user, passw, sno
-    sno += 1
-
-    user = Username.get()
-    # passw = password.get()
-    print(type(Username),dir(Username), sep ='\n')
-    
-    with open("sno.txt", "w") as flogin:
-        flogin.write(str(sno))
-    #query = "insert into login(id,name,score,password)values({},'{}',{},'{}')".format(sno, user, streak, passw)
-
-    #cursor.execute(query)
-    db.commit()
-    
-
-label1 = tk.Label(login_frame, text="Username -", )
-label1.place(x=50, y=20)
-
-Username =tk.Entry(login_frame, width=500)
-Username.place(x=150, y=20, width=100)
-
-label2 = tk.Label(login_frame, text="Password -")
-label2.place(x=50, y=50)
-
-password = tk.Entry(login_frame, width=500)
-password.place(x=150, y=50, width=100)
-
-submitbtn = tk.Button(login_frame, text="Login", command=login)
-submitbtn.place(x=130, y=135, width=55)
-
-home_btn = tk.Button(login_frame, text="Go to Home", command=chem)
-home_btn.place(x=130, y=135, width=55)
-
-
-
-#------------------------------------------------------------
-
+# -------------------------------------------BIOLOGY Ends--------------------------------
 # hide previous frames
 def hide_all_frames():
     # doesnt allow the same thing to come second time
@@ -441,13 +389,11 @@ def hide_all_frames():
         widget.destroy()
     for widget in bio_frame.winfo_children():
         widget.destroy()
-    for widget in login_frame.winfo_children():
-        widget.destroy()
+
 
     chem_frame.pack_forget()
     phy_frame.pack_forget()
     bio_frame.pack_forget()
-    login_frame.pack_forget()
 
 
 # menu
@@ -460,7 +406,6 @@ my_menu.add_cascade(label="Subject", menu=sub_menu)
 sub_menu.add_command(label="Chemistry", command=chem)
 sub_menu.add_command(label="Physics", command=phy)
 sub_menu.add_command(label="Biology", command=bio)
-sub_menu.add_command(label="Login", command=login)
 sub_menu.add_separator()
 sub_menu.add_command(label="Exit", command=root.quit)
 
