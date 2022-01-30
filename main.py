@@ -13,7 +13,7 @@ with open("streak.txt", "r") as f:
     streak = int(f.read())
 
 db = mysql.connector.connect(
-    host="localhost", user="root", db="bntr", passwd="sid2baddy")
+    host="localhost", user="root", db="bntr", passwd="fashbooster2004!")
 cursor = db.cursor()
 
 
