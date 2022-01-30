@@ -1,24 +1,18 @@
-import mysql.connector
 import time
 import tkinter as tk
 from tkinter import *
-# from tkinter.ttk import *
 from random import *
 from PIL import ImageTk, Image
 from tkinter import messagebox
 import threading
+import os
+
+from matplotlib.pyplot import get
+from Auth import Auth
+from teststufff import plots
 
 
-with open("streak.txt", "r") as f:
-    streak = int(f.read())
-
-db = mysql.connector.connect(
-    host="localhost", user="root", db="bntr", passwd="fashbooster2004!")
-cursor = db.cursor()
-
-
-with open("sno.txt", "r") as flogin:
-    sno = int(flogin.read())
+auth = Auth()
 
 
 #SPLASH    
@@ -34,54 +28,141 @@ label_img = Label(splash_root, image=img_home)
 label_img.place(x=0, y=0)
 
 
+
+def delete2():
+    screen3.destroy()
+
+def delete3():
+    screen4.destroy()
+
+def delete4():
+    screen5.destroy()
+
+def login_success():
+    global screen3
+    screen3 = Toplevel(root)
+    screen3.title("Success")
+    screen3.geometry("150x100")
+    Label(screen3,text="Login Succesful").pack()
+    Button(screen3,text="OK", command=delete2).pack()
+
+def password_not_recognized():
+    global screen4
+    screen4 = Toplevel(root)
+    screen4.title("Error")
+    screen4.geometry("150x100")
+    Label(screen4, text="Password error").pack()
+    Button(screen4, text="OK", command=delete3).pack()
+
+def user_not_found():
+    global screen5
+    screen5 = Toplevel(root)
+    screen5.title("Not Found")
+    screen5.geometry("150x100")
+    Label(screen5, text="username or password incorrect").pack()
+    Button(screen5, text="OK", command=delete4).pack()
+
+
+def register_user():
+    username_info = username.get()
+    password_info = password.get()
+
+    if (username_info== "" and password_info==""):
+        messagebox.showinfo("", "Blank not allowed")
+    else:
+        auth.register(username_info, password_info)
+
+    username_entry.delete(0,END)
+    password_entry.delete(0,END)
+
+    Label(screen1,text="Registration Success",fg='green',font=('calibri',11)).pack()
+
+def login_verify():
+    global username1, streak
+    username1 = username_verify.get()
+    password1 = password_verify.get()
+
+    username_entry1.delete(0,END)
+    password_entry1.delete(0,END)
+
+   
+    status, data = auth.login(username1, password1)
+    userdat = auth.get_data(username1)
+    streak = userdat.get("streak")
+
+    if not status:
+        streak = 0
+        user_not_found()
+    
+def graphs():
+    data = auth.get_all_data()
+    l1,l2=[],[]
+    for key,value in data.items():
+        l1.append (key)
+        l2.append (value[1]["streak"])
+    plots(l1,l2)
+
+
+def register():
+
+    global screen1
+    screen1 = Toplevel(root)
+    screen1.title("Register")
+    screen1.geometry("300x250")
+    global username,password,username_entry,password_entry
+    username = StringVar()
+    password = StringVar()
+    Label(screen1, text="Please enter details below").pack()
+    Label(screen1, text="").pack()
+
+    Label(screen1,text="Username *").pack()
+    username_entry = Entry(screen1,textvariable = username)
+    username_entry.pack()
+    Label(screen1, text="Password *").pack()
+    password_entry =Entry(screen1, textvariable=password)
+    password_entry.pack()
+    Label(screen1, text="").pack()
+    Button(screen1, text="Register",width=10,height=1, command=register_user).pack()
+
+def login():
+    global screen2,username_verify,password_verify,username_entry1,password_entry1
+    screen2 = Toplevel(root)
+    screen2.title("Login")
+    screen2.geometry("300x250")
+    username_verify = StringVar()
+    password_verify = StringVar()
+    Label(screen2, text="Please enter details below").pack()
+    Label(screen2, text="").pack()
+    Label(screen2, text="Username").pack()
+    username_entry1 = Entry(screen2, textvariable=username_verify)
+    username_entry1.pack()
+    Label(screen2, text="").pack()
+    Label(screen2, text="Password").pack()
+    password_entry1 = Entry(screen2, textvariable=password_verify)
+    password_entry1.pack()
+    Label(screen2, text="").pack()
+    Button(screen2, text="Login", width=10,
+           height=1, command=login_verify).pack()
+    
 def main():
     splash_root.destroy()
+    
     global root
     root = Tk()
     root.title('Brainnuttr')
     root.geometry("960x560")
+    Label(text = "Brainnuttr", bg="grey", width="300", height="2",font=("Calibri",13)).pack()
+    Label(text="").pack()
+    Button(text="Login",height="2",width="30",command=login).pack()
+    Label(text="").pack()
+    Button(text="Register", height="2", width="30", command=register).pack()
+    Label(text="").pack()
+    Label(text="Questions", bg="lemon chiffon2", width="300",
+          height="2", font=("Calibri", 13)).pack()
+    Label(text="").pack()
 
+#---------------------------------------------------------------------------------------------------
 
-    def profile():
-        hide_all_frames()
-        global user,passw,sno
-
-
-        user = Username.get()
-        passw = password.get()
-        if not user or not passw:
-            messagebox.showinfo("","Blank not allowed")
-        sno += 1
-        with open("sno.txt","w") as flogin:
-            flogin.write(str(sno))
-
-        query = "insert into login(id,name,score,password)values({},'{}',{}, '{}')".format(sno, user, streak, passw)
-
-        cursor.execute(query)
-        db.commit()
-
-
-
-    label1 = tk.Label(root, text="Username -", font=("Heletica bold", 12))
-    label1.place(x=50, y=20)
-
-    Username = tk.Entry(root, width=500)
-    Username.place(x=150, y=20, width=100)
-
-    label2 = tk.Label(root, text="Password -",font=("Heletica bold", 12))
-    label2.place(x=50, y=50)
-
-    password = tk.Entry(root, width=500)
-    password.place(x=150, y=50, width=100)
-
-    submitbtn = tk.Button(root, text="Login", command=profile)
-    submitbtn.place(x=130, y=135, width=55)
-
-    reg_btn = tk.Button(root, text="Register", command=profile)
-    reg_btn.place(x=130, y=175, width=55)
-
-
-# _________________________CHEMISTRY starts_________________________________________________
     answer_label = None
     # randomizing  function
 
@@ -119,12 +200,13 @@ def main():
         time.sleep(sec)
         func()
 
-
+    def update_streak():
+        auth.set_data(username1,{"streak":streak})
     # create frames
     chem_frame = Frame(root, width=500, height=500)
     phy_frame = Frame(root, width=500, height=500)
     bio_frame = Frame(root, width=500, height=500)
-    login_frame = Frame(root, width=300, height=300)
+
 
 
     # answer functions
@@ -141,9 +223,7 @@ def main():
         # clear box
         answer_input.delete(0, 'end')
 
-        with open("streak.txt", "w") as f:
-            f.write(str(streak))
-
+        update_streak()
         t1 = threading.Thread(target=timer1, args=(3, random_q))
         t1.start()
 
@@ -191,7 +271,7 @@ def main():
         def button_hover_leave(e):
             status_label.config(text="")
 
-        status_button = Button(chem_frame, text="Want to know your streak?")
+        status_button = Button(chem_frame, text="Want to know your streak?", command = graphs)
         status_button.pack(pady=2)
 
         status_label = Label(chem_frame, text='', relief=SUNKEN, anchor=E)
@@ -257,9 +337,8 @@ def main():
         # clear box
         answer_input1.delete(0, 'end')
 
-        with open("streak.txt", "w") as f:
-            f.write(str(streak))
 
+        update_streak()
         t1 = threading.Thread(target=timer, args=(3, random_q1))
         t1.start()
 
@@ -308,7 +387,7 @@ def main():
         def button_hover_leave1(e):
             status_label1.config(text="")
 
-        status_button1 = Button(phy_frame, text="Want to know your streak?")
+        status_button1 = Button(phy_frame, text="Want to know your streak?",command = graphs)
         status_button1.pack(pady=2)
 
         status_label1 = Label(phy_frame, text='', relief=SUNKEN, anchor=E)
@@ -376,9 +455,8 @@ def main():
         # clear box
         answer_input2.delete(0, 'end')
 
-        with open("streak.txt", "w") as f:
-            f.write(str(streak))
 
+        update_streak()
         t2 = threading.Thread(target=timer, args=(3, random_q2))
         t2.start()
 
@@ -427,7 +505,7 @@ def main():
         def button_hover_leave2(e):
             status_label1.config(text="")
 
-        status_button1 = Button(bio_frame, text="Want to know your streak?")
+        status_button1 = Button(bio_frame, text="Want to know your streak?",command = graphs)
         status_button1.pack(pady=2)
 
         status_label1 = Label(bio_frame, text='', relief=SUNKEN, anchor=E)
@@ -471,6 +549,7 @@ def main():
 
 
 #splash screen timer
-splash_root.after(3000, main)
+splash_root.after(1000, main)
+
 
 mainloop()
