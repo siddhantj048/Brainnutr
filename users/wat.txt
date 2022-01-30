@@ -1,0 +1,2 @@
+kosu
+{'streak': 3}
