@@ -5,11 +5,9 @@ from random import *
 from PIL import ImageTk, Image
 from tkinter import messagebox
 import threading
-import os
-
 from matplotlib.pyplot import get
 from Auth import Auth
-from teststufff import plots
+from matplot import plots
 
 
 auth = Auth()
@@ -32,8 +30,6 @@ label_img.place(x=0, y=0)
 def delete2():
     screen3.destroy()
 
-def delete3():
-    screen4.destroy()
 
 def delete4():
     screen5.destroy()
@@ -46,20 +42,12 @@ def login_success():
     Label(screen3,text="Login Succesful").pack()
     Button(screen3,text="OK", command=delete2).pack()
 
-def password_not_recognized():
-    global screen4
-    screen4 = Toplevel(root)
-    screen4.title("Error")
-    screen4.geometry("150x100")
-    Label(screen4, text="Password error").pack()
-    Button(screen4, text="OK", command=delete3).pack()
-
 def user_not_found():
     global screen5
     screen5 = Toplevel(root)
     screen5.title("Not Found")
     screen5.geometry("150x100")
-    Label(screen5, text="username or password incorrect").pack()
+    Label(screen5, text="Username or password incorrect").pack()
     Button(screen5, text="OK", command=delete4).pack()
 
 
@@ -85,7 +73,7 @@ def login_verify():
     username_entry1.delete(0,END)
     password_entry1.delete(0,END)
 
-   
+
     status, data = auth.login(username1, password1)
     userdat = auth.get_data(username1)
     streak = userdat.get("streak")
@@ -93,7 +81,10 @@ def login_verify():
     if not status:
         streak = 0
         user_not_found()
-    
+    else:
+        Label(screen2,text="Login Success",fg='green',font=('calibri',11)).pack()
+        login_success()
+
 def graphs():
     data = auth.get_all_data()
     l1,l2=[],[]
