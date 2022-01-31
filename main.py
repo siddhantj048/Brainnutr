@@ -129,7 +129,7 @@ def login():
     username_entry1.pack()
     Label(screen2, text="").pack()
     Label(screen2, text="Password").pack()
-    password_entry1 = Entry(screen2, textvariable=password_verify)
+    password_entry1 = Entry(screen2, textvariable=password_verify, show='*')
     password_entry1.pack()
     Label(screen2, text="").pack()
     Button(screen2, text="Login", width=10,
