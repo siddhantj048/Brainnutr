@@ -540,7 +540,7 @@ def main():
 
 
 #splash screen timer
-splash_root.after(1000, main)
+splash_root.after(2500, main)
 
 
 mainloop()
